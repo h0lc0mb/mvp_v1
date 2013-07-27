@@ -37,6 +37,9 @@ describe "User pages" do
         fill_in "Email",        with: "user@example.com"
         fill_in "Password",     with: "foobar"
         fill_in "Confirmation", with: "foobar"
+
+        # I think I need to change fill_in to something that works with a drop-down menu
+        select "Teacher",       from: "I'm a..."
       end
 
       it "should create a user" do

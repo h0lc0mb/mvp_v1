@@ -15,7 +15,8 @@ describe User do
  
 	before do
 		@user = User.new(name: "Example User", email: "user@example.com",
-										 password: "foobar", password_confirmation: "foobar")
+										 password: "foobar", password_confirmation: "foobar",
+										 role: "teacher")
 	end
 
 	subject { @user }
@@ -25,6 +26,7 @@ describe User do
 	it { should respond_to(:password_digest) }
 	it { should respond_to(:password) }
 	it { should respond_to(:password_confirmation) }
+	it { should respond_to(:role) }
 	it { should respond_to(:authenticate) }
 
 	it { should be_valid }
@@ -109,5 +111,25 @@ describe User do
 			it { should_not == user_for_invalid_password }
 			specify { user_for_invalid_password.should be_false }
 		end
+	end
+
+	describe "when no role is selected" do
+		before { @user.role = " " }
+		it { should_not be_valid }
+	end
+
+	describe "when role is teacher" do
+		before { @user.role = "teacher" }
+		it { should be_valid }
+	end
+
+	describe "when role is student" do
+		before { @user.role = "student" }
+		it { should be_valid }
+	end
+
+	describe "when role is not teacher or student" do
+		before { @user.role = "football" }
+		it { should_not be_valid }
 	end
 end
