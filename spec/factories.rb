@@ -10,4 +10,9 @@ FactoryGirl.define do
 			admin true
 		end
 	end
+
+	factory :course do
+		coursename "Susan Through the Looking Glass"
+		user
+	end
 end

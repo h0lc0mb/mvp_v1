@@ -30,6 +30,7 @@ describe User do
 	it { should respond_to(:remember_token) }
 	it { should respond_to(:admin) }
 	it { should respond_to(:authenticate) }
+	it { should respond_to(:courses) }
 
 	it { should be_valid }
 	it { should_not be_admin }
@@ -148,5 +149,29 @@ describe User do
 	describe "remember token" do
 		before { @user.save }
 		its(:remember_token) { should_not be_blank }
+	end
+
+	describe "course associations" do
+
+		before { @user.save }
+		let!(:older_course) do
+			FactoryGirl.create(:course, user: @user, created_at: 1.day.ago)
+		end
+		let!(:newer_course) do
+			FactoryGirl.create(:course, user: @user, created_at: 1.hour.ago)
+		end
+
+		it "should have the right courses in the right order" do
+			@user.courses.should == [newer_course, older_course]
+		end
+
+		it "should destroy associated courses" do
+			courses = @user.courses.dup
+			@user.destroy
+			courses.should_not be_empty
+			courses.each do |course|
+				Course.find_by_id(course.id).should be_nil
+			end
+		end
 	end
 end
