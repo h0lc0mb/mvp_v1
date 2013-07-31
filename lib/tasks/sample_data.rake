@@ -31,10 +31,14 @@ namespace :db do
 									 role: role)
 		end
 
-		users = User.all(limit: 6)
-		50.times do
-			coursename = Faker::Lorem.sentence(5)
-			users.each { |user| user.courses.create!(coursename: coursename) }
+		users = User.all
+		users.each do |user|
+			if user.role == "teacher"
+				5.times do
+					coursename = Faker::Lorem.sentence(5)
+					user.courses.create!(coursename: coursename)
+				end
+			end
 		end
 	end
 end
