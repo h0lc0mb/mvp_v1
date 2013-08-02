@@ -13,6 +13,8 @@ class User < ActiveRecord::Base
   attr_accessible :name, :email, :password, :password_confirmation, :role
   has_secure_password
   has_many :courses, dependent: :destroy
+  has_many :relationships, foreign_key: "follower_user_id", dependent: :destroy
+  has_many :followed_courses, through: :relationships, source: :followed_course
 
   before_save { |user| user.email = email.downcase }
   before_save :create_remember_token
@@ -24,6 +26,23 @@ class User < ActiveRecord::Base
   validates :password, presence: true, length: { minimum: 6 }
   validates :password_confirmation, presence: true
   validates_inclusion_of :role, in: %w(teacher student)
+
+  def courselist
+    # This is preliminary
+    Course.where("user_id = ?", id)
+  end
+
+  def following_course?(course_to_follow)
+    relationships.find_by_followed_course_id(course_to_follow.id)
+  end
+
+  def follow_course!(course_to_follow)
+    relationships.create!(followed_course_id: course_to_follow.id)
+  end
+
+  def unfollow_course!(course_to_follow)
+    relationships.find_by_followed_course_id(course_to_follow.id).destroy
+  end
 
   private
 

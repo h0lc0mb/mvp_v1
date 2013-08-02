@@ -1,0 +1,6 @@
+<% if @courselist_items.any? %>
+	<ol class="courses">
+		<%= render partial: 'shared/courselist_item', collection: @courselist_items %>
+	</ol>
+	<%= will_paginate @courselist_items %>
+<% end %>

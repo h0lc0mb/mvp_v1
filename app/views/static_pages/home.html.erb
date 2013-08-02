@@ -5,9 +5,16 @@
 				<%= render 'shared/user_info' %>
 			</section>
 			<section>
+				<%= render 'shared/stats' %>
+			</section>
+			<section>
 				<%= render 'shared/course_form' %>
 			</section>
 		</aside>
+		<div class="span8">
+			<h3>Course List</h3>
+			<%= render 'shared/courselist' %>
+		</div>
 	</div>
 <% else %>
 	<div class="center hero-unit">

@@ -4,6 +4,7 @@ describe "Course pages" do
 
 	subject { page }
 
+# Revisit on cleanup -- I think this student / teacher stuff should live in user_pages_spec, not here!
 	describe "as a student" do
 		before do
 			@user = User.new(name:     "Jorge Borges", 
@@ -60,4 +61,52 @@ describe "Course pages" do
 			end
 		end
 	end
+
+	describe "course destruction" do
+		before { FactoryGirl.create(:course, user: user) }
+
+		describe "as correct user" do
+			before { visit root_path }
+
+			it "should delete a course" do
+				expect { click_link "delete" }.to change(Course, :count).by(-1)
+			end
+		end
+	end
+
+	describe "course profile page" do
+		let(:course) { FactoryGirl.create(:course) }
+		before { visit course_path(course) }
+
+		it { should have_selector('h1',    text: course.coursename) }
+		it { should have_selector('title', text: course.coursename)}
+
+		before do
+			@user = User.new(name:     "Jorge Borges", 
+											 email:    "borges@jorgeluis.com",
+											 password: "thealeph",
+											 password_confirmation: "thealeph",
+											 role: "student")
+			sign_in user
+			user.follow_course!(course)
+			visit course_path(course)
+		end
+
+		it { should have_link("1 student", href: followers_course_path(course)) }
+	end
+
+	  describe "user followers" do
+    let(:user) { FactoryGirl.create(:user) }
+    let(:course) { FactoryGirl.create(:course) }
+    before { user.follow_course!(course) }
+
+    before do
+    	sign_in user
+      visit followers_course_path(course)
+    end
+
+    it { should have_selector('title', text: full_title('Students')) }
+    it { should have_selector('h3', text: 'Students') }
+    it { should have_link(user.name, href: user_path(user)) }
+  end
 end

@@ -31,6 +31,12 @@ describe User do
 	it { should respond_to(:admin) }
 	it { should respond_to(:authenticate) }
 	it { should respond_to(:courses) }
+	it { should respond_to(:courselist) }
+	it { should respond_to(:relationships) }
+	it { should respond_to(:followed_courses) }
+	it { should respond_to(:following_course?) }
+	it { should respond_to(:follow_course!) }
+	it { should respond_to(:unfollow_course!) }
 
 	it { should be_valid }
 	it { should_not be_admin }
@@ -172,6 +178,34 @@ describe User do
 			courses.each do |course|
 				Course.find_by_id(course.id).should be_nil
 			end
+		end
+
+		describe "status" do
+			let(:unfollowed_course) do
+				FactoryGirl.create(:course, user: FactoryGirl.create(:user))
+			end
+
+			its(:courselist) { should include(newer_course) }
+			its(:courselist) { should include(older_course) }
+			its(:courselist) { should_not include(unfollowed_course) }
+		end
+	end
+
+	describe "following courses" do
+		let(:course_to_follow) { FactoryGirl.create(:course) }
+		before do
+			@user.save
+			@user.follow_course!(course_to_follow)
+		end
+
+		it { should be_following_course(course_to_follow) }
+		its(:followed_courses) { should include(course_to_follow) }
+
+		describe "and unfollowing courses" do
+			before { @user.unfollow_course!(course_to_follow) }
+
+			it { should_not be_following_course(course_to_follow) }
+			its(:followed_courses) { should_not include(course_to_follow) }
 		end
 	end
 end

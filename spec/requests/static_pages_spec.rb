@@ -11,6 +11,33 @@ describe "StaticPages" do
 		it { should have_selector('h1', text: 'C4') }
 		it { should have_selector('title', text: full_title('')) }
     it { should_not have_selector('title', text: '| Home') }
+
+    describe "for signed-in users" do
+    	let(:user) { FactoryGirl.create(:user) }
+    	before do
+    		FactoryGirl.create(:course, user: user, coursename: "Cervantes 101")
+    		FactoryGirl.create(:course, user: user, coursename: "Borges 201")
+    		sign_in user
+    		visit root_path
+    	end
+
+    	it "should render the user's courselist" do
+    		user.courselist.each do |item|
+    			page.should have_selector("li##{item.id}", text: item.coursename)
+    			# It's possible this should be item.content
+    		end
+    	end
+
+    	describe "courses following count" do
+    		let(:course_to_follow) { FactoryGirl.create(:course) }
+    		before do
+    			user.follow_course!(course_to_follow)
+    			visit root_path
+    		end
+
+    		it { should have_link("1 course joined", href: following_user_path(user)) }
+    	end
+    end
 	end
 
 	describe "Help page" do

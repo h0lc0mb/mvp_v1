@@ -83,7 +83,6 @@ describe "User pages" do
         fill_in "Password",     with: "foobar"
         fill_in "Confirmation", with: "foobar"
 
-        # I think I need to change fill_in to something that works with a drop-down menu
         select "Teacher",       from: "I'm a..."
       end
 
@@ -156,5 +155,70 @@ describe "User pages" do
       it { should have_content(c2.coursename) }
       it { should have_content(user.courses.count) }
     end
+
+    describe "join/leave buttons" do
+      let(:course) { FactoryGirl.create(:course) }
+      before { sign_in user }
+
+      describe "joining a course" do
+        before { visit course_path(course) }
+
+        it "should increment the followed course count" do
+          expect do
+            click_button "Join course"
+          end.to change(user.followed_courses, :count).by(1)
+        end
+
+        it "should increment the course's follower user count" do
+          expect do
+            click_button "Join course"
+          end.to change(course.follower_users, :count).by(1)
+        end
+
+        describe "toggling the button" do
+          before { click_button "Join course" }
+          it { should have_selector('input', value: "Leave course") }
+        end
+      end
+
+      describe "leaving a course" do
+        before do
+          user.follow_course!(course)
+          visit course_path(course)
+        end
+
+        it "should decrement the followed course count" do
+          expect do
+            click_button "Leave course"
+          end.to change(user.followed_courses, :count).by(-1)
+        end
+
+        it "should decrement the courses follower user count" do
+          expect do
+            click_button "Leave course"
+          end.to change(course.follower_users, :count).by(-1)
+        end
+
+        describe "toggling the button" do
+          before { click_button "Leave course" }
+          it { should have_selector('input', value: "Join course") }
+        end
+      end
+    end
+  end
+
+  describe "courses followed" do
+    let(:user) { FactoryGirl.create(:user) }
+    let(:course) { FactoryGirl.create(:course) }
+    before { user.follow_course!(course) }
+
+    before do
+      sign_in user
+      visit following_user_path(user)
+    end
+
+    it { should have_selector('title', text: full_title('Courses')) }
+    it { should have_selector('h3', text: 'Courses') }
+    it { should have_link(course.coursename, href: course_path(course)) }
   end
 end

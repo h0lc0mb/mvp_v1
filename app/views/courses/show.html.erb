@@ -1,0 +1,16 @@
+<% provide(:title, @course.coursename) %>
+<div class="row">
+	<aside class="span4">
+		<section>
+			<h1>
+				<%= @course.coursename %>
+			</h1>
+		</section>
+		<section>
+			<%= render 'shared/other_stats' %>
+		</section>
+	</aside>
+	<div class="span8">
+		<%= render 'follow_course_form' if signed_in? %>
+	</div>
+</div>

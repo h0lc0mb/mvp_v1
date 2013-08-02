@@ -10,6 +10,8 @@ describe Course do
 	it { should respond_to(:coursename) }
 	it { should respond_to(:user_id) }
 	it { should respond_to(:user) }
+	it { should respond_to(:reverse_relationships) }
+	it { should respond_to(:follower_users) }
 	its(:user) { should == user }
 
 	it { should be_valid }
@@ -35,5 +37,21 @@ end
 	describe "with coursename that is too long" do
 		before { @course.coursename = "a" * 101 }
 		it { should_not be_valid }
+	end
+
+	describe "following courses" do
+		let(:course_to_follow) { FactoryGirl.create(:course) }
+		before do
+			@user = User.new(name: "Example User", email: "user@example.com",
+										 	 password: "foobar", password_confirmation: "foobar",
+										 	 role: "teacher")
+			@user.save
+			@user.follow_course!(course_to_follow)
+		end
+
+		describe "followed course" do
+			subject { course_to_follow }
+			its(:follower_users) { should include(@user) }
+		end
 	end
 end

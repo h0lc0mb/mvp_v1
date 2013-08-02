@@ -1,11 +1,22 @@
 MvpV1::Application.routes.draw do
-  resources :users
-  resources :sessions, only: [:new, :create, :destroy]
-  resources :courses, only: [:create, :destroy]
+  resources :users do
+    member do
+      get :following
+    end
+  end
+  resources :sessions,      only: [:new, :create, :destroy]
+  resources :courses do
+    member do
+      get :followers
+    end
+  end
+  resources :relationships, only: [:create, :destroy]
 
   match '/signup',  to: 'users#new'
   match '/signin',  to: 'sessions#new'
   match '/signout', to: 'sessions#destroy', via: :delete
+
+  match 'launch',   to: 'courses#new'
 
   root to: 'static_pages#home'
 
