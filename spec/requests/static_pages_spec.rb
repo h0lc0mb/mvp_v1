@@ -21,10 +21,9 @@ describe "StaticPages" do
     		visit root_path
     	end
 
-    	it "should render the user's courselist" do
+    	it "should render the user's 'courses launched' list" do
     		user.courselist.each do |item|
     			page.should have_selector("li##{item.id}", text: item.coursename)
-    			# It's possible this should be item.content
     		end
     	end
 

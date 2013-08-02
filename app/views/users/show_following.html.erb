@@ -13,10 +13,10 @@
 	<div class="span8">
 		<h3><%= @title %></h3>
 		<% if @courses.any? %>
-			<ul class="courses">
+			<ol class="courses">
 				<%= render @courses %>
-			</ul>
-			<%-# need to add course pagination here <%= will_paginate -%>
+			</ol>
+			<%= will_paginate @courses %>
 		<% end %>
 	</div>
 </div>

@@ -7,6 +7,7 @@ describe "Course pages" do
 # Revisit on cleanup -- I think this student / teacher stuff should live in user_pages_spec, not here!
 	describe "as a student" do
 		before do
+			# probably should not be calling this @user
 			@user = User.new(name:     "Jorge Borges", 
 											 email:    "borges@jorgeluis.com",
 											 password: "thealeph",

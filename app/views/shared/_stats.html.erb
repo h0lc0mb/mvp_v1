@@ -1,7 +1,15 @@
 <% @user ||= current_user %>
 <div class="stats">
+	<% if @user.courses.any? %>
+		<a href="#">
+			<strong id ="following" class="stats">
+				<%= @user.courses.count %>
+			</strong>
+			courses launched
+		</a>
+	<% end %>
 	<a href="<%= following_user_path(@user) %>">
-		<strong id="following" class="stat">
+		<strong id="following" class="stats">
 			<%= @user.followed_courses.count %>
 		</strong>
 		courses joined

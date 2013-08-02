@@ -1,7 +1,9 @@
-<div id="follow_course_form">
-	<% if current_user.following_course?(@course) %>
-		<%= render 'unfollow_course' %>
-	<% else %>
-		<%= render 'follow_course' %>
-	<% end %>
-</div>
+<% unless current_user?(@course.user) %>
+	<div id="follow_course_form">
+		<% if current_user.following_course?(@course) %>
+			<%= render 'unfollow_course' %>
+		<% else %>
+			<%= render 'follow_course' %>
+		<% end %>
+	</div>
+<% end %>

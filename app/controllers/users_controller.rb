@@ -5,7 +5,8 @@ class UsersController < ApplicationController
 
 	def show
 		@user = User.find(params[:id])
-		@courses = @user.courses.paginate(page: params[:page])
+		@courses_launched = @user.courses.paginate(page: params[:page])
+		@courses_joined = @user.followed_courses.paginate(page: params[:page])
 	end
 
 	def new
@@ -47,7 +48,7 @@ class UsersController < ApplicationController
 	end
 
 	def following
-		@title = "Courses"
+		@title = "Courses Joined"
 		@user = User.find(params[:id])
 		@courses = @user.followed_courses.paginate(page: params[:page])
 		render 'show_following'

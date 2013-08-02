@@ -6,6 +6,7 @@
 				<%= gravatar_for @user %>
 				<%= @user.name %>
 			</h1>
+			<p>Description here.</p>
 		</section>
 		<section>
 			<%= render 'shared/stats' %>
@@ -13,11 +14,18 @@
 	</aside>
 	<div class="span8">
 		<% if @user.courses.any? %>
-			<h3>Courses (<%= @user.courses.count%>)</h3>
-			<ol class = "courses">
-				<%= render @courses %>
+			<h3>Courses Launched (<%= @user.courses.count%>)</h3>
+			<ol class="courses">
+				<%= render @courses_launched %>
 			</ol>
-			<%= will_paginate @courses %>
+			<%= will_paginate @courses_launched %>
+		<% end %>
+		<% if@user.relationships.any? %>
+			<h3>Courses Joined (<%= @user.relationships.count%>)</h3>
+			<ol class="courses">
+				<%= render @courses_joined %>
+			</ol>
+			<%= will_paginate @courses_joined %>
 		<% end %>
 	</div>
 </div>
