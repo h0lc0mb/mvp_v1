@@ -1,12 +1,16 @@
 <li>
 	<b>
 		<font size = 3>
-			<span class="coursename"><%= course.coursename %></span>
+			<%= link_to course.coursename, course %>
 		</font>
 	</b>
-	<span class="timestamp">
-		Launched <%= time_ago_in_words(course.created_at) %> ago.
-	</span>
+	<br>
+		<span class="launched_info">
+			Launched by 
+			<%= link_to course.user.name, course.user %>
+			<%= time_ago_in_words(course.created_at) %> 
+			ago.
+		</span>
 	<% if current_user?(course.user) %>
 		<%= link_to "delete", course, method: :delete,
 																	data: { confirm: "You sure? This is the point of no return!" },

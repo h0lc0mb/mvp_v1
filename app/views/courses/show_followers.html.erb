@@ -3,8 +3,14 @@
 	<aside class="span4">
 		<section>
 			<h1><%=@course.coursename %></h1>
+			<br>
+			<span class="launched_info">
+				Launched by 
+				<%= link_to @course.user.name, @course.user %>
+				<%= time_ago_in_words(@course.created_at) %> 
+				ago.
+			</span>
 			<span><%= link_to "view course page", @course %></span>
-			<span><b>Students:</b> Number of students here </span>
 		</section>
 		<section>
 			<%= render 'shared/other_stats' %>

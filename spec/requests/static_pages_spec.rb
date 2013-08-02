@@ -35,7 +35,7 @@ describe "StaticPages" do
     			visit root_path
     		end
 
-    		it { should have_link("1 course joined", href: following_user_path(user)) }
+    		it { should have_link("1 courses joined", href: following_user_path(user)) }
     	end
     end
 	end

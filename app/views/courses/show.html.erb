@@ -5,6 +5,13 @@
 			<h1>
 				<%= @course.coursename %>
 			</h1>
+			<br>
+			<span class="launched_info">
+				Launched by 
+				<%= link_to @course.user.name, @course.user %>
+				<%= time_ago_in_words(@course.created_at) %> 
+				ago.
+			</span>
 		</section>
 		<section>
 			<%= render 'shared/other_stats' %>
