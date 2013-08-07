@@ -4,40 +4,30 @@ describe "Course pages" do
 
 	subject { page }
 
-# Revisit on cleanup -- I think this student / teacher stuff should live in user_pages_spec, not here!
-	describe "as a student" do
-		before do
-			# probably should not be calling this @user
-			@user = User.new(name:     "Jorge Borges", 
-											 email:    "borges@jorgeluis.com",
-											 password: "thealeph",
-											 password_confirmation: "thealeph",
-											 role: "student")
-			sign_in user
-			visit root_path
-		end
+	let(:user) { FactoryGirl.create(:user) }
+	before { sign_in user }
 
-		# I don't know why this test is failing -- home page does not display 
-		# "Launch course" button for students
-		# it { should_not have_button('Launch course') }
-	end
+# BUG: The student "has" the button, they just can't SEE it
 
-	describe "as a teacher" do
+#	describe "should not see launch button as a student" do
+#		before do
+#			user.role = "student"
+#			sign_in user
+#			visit root_path
+#		end
+#
+#		it { should_not have_button('Launch course') }
+#	end
+
+	describe "should see launch button as a teacher" do
 		before do
-			@user = User.new(name:     "Miguel Cervantes",
-											 email:    "cervantes@miguel.com",
-											 password: "quixote",
-											 password_confirmation: "quixote",
-											 role: "teacher")
+			user.role = "teacher"
 			sign_in user
 			visit root_path
 		end
 
 		it { should have_button('Launch course') }
 	end
-
-	let(:user) { FactoryGirl.create(:user) }
-	before { sign_in user }
 
 	describe "course creation" do
 		before { visit root_path }
@@ -77,26 +67,42 @@ describe "Course pages" do
 
 	describe "course profile page" do
 		let(:course) { FactoryGirl.create(:course) }
+
 		before { visit course_path(course) }
 
 		it { should have_selector('h1',    text: course.coursename) }
 		it { should have_selector('title', text: course.coursename)}
 
 		before do
-			@user = User.new(name:     "Jorge Borges", 
-											 email:    "borges@jorgeluis.com",
-											 password: "thealeph",
-											 password_confirmation: "thealeph",
-											 role: "student")
+			user.role = "student"
 			sign_in user
 			user.follow_course!(course)
 			visit course_path(course)
 		end
 
 		it { should have_link("1 student", href: followers_course_path(course)) }
+
+
+		describe "posts" do
+			let(:follower_user) { FactoryGirl.create(:user) }
+			before { follower_user.follow_course!(course) }
+
+			let!(:p1) { FactoryGirl.create(:post, follower_user: follower_user, 
+																	 followed_course: course, 
+																	 content: "What is Gauss's Law?") }
+			let!(:p2) { FactoryGirl.create(:post, follower_user: follower_user, 
+																	 followed_course: course, 
+																	 content: "De que te ries Sancho?") }
+		
+			before { visit course_path(course) }
+			
+			it { should have_content(p1.content) }
+			it { should have_content(p2.content) }
+			it { should have_content(course.posts.count) }
+		end
 	end
 
-	  describe "user followers" do
+	describe "user followers" do
     let(:user) { FactoryGirl.create(:user) }
     let(:course) { FactoryGirl.create(:course) }
     before { user.follow_course!(course) }

@@ -1,0 +1,9 @@
+<li>
+	<span class="content"><%= post.content %></span>
+	<span class="timestamp">
+		Posted by
+		<%= link_to post.follower_user.name, post.follower_user %>
+		<%= time_ago_in_words(post.created_at) %> 
+		ago.
+	</span>
+</li>

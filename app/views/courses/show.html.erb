@@ -17,8 +17,26 @@
 		<section>
 			<%= render 'shared/other_stats' %>
 		</section>
+		<section>
+			<br>
+			<%-# Switching to shared to try to get failed posting to work -%>
+			<%= render 'shared/follow_course_form' if signed_in? %>
+		</section>	
 	</aside>
 	<div class="span8">
-		<%= render 'follow_course_form' if signed_in? %>
+		<section>
+			<br>
+			**Some text here saying add your question below**
+			<%= render 'shared/post_form' %>
+		</section>
+		<section>
+			<%-#<% if @course.posts.any? -%>
+			<h3>Q+A Log (<%= @course.posts.count %>)</h3>
+			<ol class="posts">
+				<%= render @posts %>
+			</ol>
+			<%= will_paginate @posts %>
+			<%-#<% end -%>
+		</section>
 	</div>
 </div>

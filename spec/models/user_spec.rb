@@ -37,6 +37,7 @@ describe User do
 	it { should respond_to(:following_course?) }
 	it { should respond_to(:follow_course!) }
 	it { should respond_to(:unfollow_course!) }
+	it { should respond_to(:posts) }
 
 	it { should be_valid }
 	it { should_not be_admin }
@@ -206,6 +207,33 @@ describe User do
 
 			it { should_not be_following_course(course_to_follow) }
 			its(:followed_courses) { should_not include(course_to_follow) }
+		end
+	end
+
+	describe "post associations" do
+
+		let(:follower_user) { FactoryGirl.create(:user) }
+		let(:followed_course) { FactoryGirl.create(:course) }
+		before { follower_user.follow_course!(followed_course) }
+
+		let!(:older_post) do
+			FactoryGirl.create(:post, follower_user: follower_user, followed_course: followed_course, created_at: 1.day.ago)
+		end
+		let!(:newer_post) do
+			FactoryGirl.create(:post, follower_user: follower_user, followed_course: followed_course, created_at: 1.hour.ago)
+		end
+
+#		it "should have the posts in the right order" do
+#			@user.posts.should == [newer_post, older_post]
+#		end
+
+		it "should destroy associated posts" do
+			posts = follower_user.posts.dup
+			follower_user.destroy
+			posts.should_not be_empty
+			posts.each do |post|
+				Post.find_by_id(post.id).should be_nil
+			end
 		end
 	end
 end

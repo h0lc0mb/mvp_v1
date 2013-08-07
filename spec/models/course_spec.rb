@@ -12,6 +12,7 @@ describe Course do
 	it { should respond_to(:user) }
 	it { should respond_to(:reverse_relationships) }
 	it { should respond_to(:follower_users) }
+	it { should respond_to(:posts) }
 	its(:user) { should == user }
 
 	it { should be_valid }
@@ -52,6 +53,32 @@ end
 		describe "followed course" do
 			subject { course_to_follow }
 			its(:follower_users) { should include(@user) }
+		end
+	end
+
+	describe "post associations" do
+		let(:follower_user) { FactoryGirl.create(:user) }
+		let(:followed_course) { FactoryGirl.create(:course) }
+		before { follower_user.follow_course!(followed_course) }
+
+		let!(:older_post) do
+			FactoryGirl.create(:post, follower_user: follower_user, followed_course: followed_course, created_at: 1.day.ago)
+		end
+		let!(:newer_post) do
+			FactoryGirl.create(:post, follower_user: follower_user, followed_course: followed_course, created_at: 1.hour.ago)
+		end
+
+		it "should have the right posts in the right order" do
+			followed_course.posts.should == [newer_post, older_post]
+		end
+
+		it "should destroy associated posts" do
+			posts = followed_course.posts.dup
+			followed_course.destroy
+			posts.should_not be_empty
+			posts.each do |post|
+				Post.find_by_id(post.id).should be_nil
+			end
 		end
 	end
 end

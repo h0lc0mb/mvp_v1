@@ -5,6 +5,8 @@ class CoursesController < ApplicationController
 
 	def show
 		@course = Course.find(params[:id])
+		@posts = @course.posts.paginate(page: params[:page])
+		@post = current_user.posts.build if signed_in?
 	end
 
 	def new
@@ -44,4 +46,21 @@ class CoursesController < ApplicationController
 			@course = current_user.courses.find_by_id(params[:id])
 			redirect_to root_url if @course.nil?
 		end
+
+# Trying to define teacher / student creation for testing
+#		def new_teacher
+#			@teacher = User.new(name:     "Miguel Cervantes",
+#											 email:    "cervantes@miguel.com",
+#											 password: "quixote",
+#											 password_confirmation: "quixote",
+#											 role: "teacher")
+#		end
+#
+#		def new_student
+#			@student = User.new(name:     "Jorge Borges", 
+#											 email:    "borges@jorgeluis.com",
+#											 password: "thealeph",
+#											 password_confirmation: "thealeph",
+#											 role: "student")
+#		end
 end

@@ -1,20 +1,18 @@
-# == Schema Information
-#
-# Table name: users
-#
-#  id         :integer          not null, primary key
-#  name       :string(255)
-#  email      :string(255)
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#
-
 class User < ActiveRecord::Base
   attr_accessible :name, :email, :password, :password_confirmation, :role
   has_secure_password
-  has_many :courses, dependent: :destroy
-  has_many :relationships, foreign_key: "follower_user_id", dependent: :destroy
-  has_many :followed_courses, through: :relationships, source: :followed_course
+
+  has_many :courses,          dependent: :destroy
+
+  has_many :relationships,    foreign_key: "follower_user_id", 
+                              dependent:   :destroy
+
+  has_many :followed_courses, through: :relationships, 
+                              source:  :followed_course
+
+  has_many :posts,           # through: :followed_courses,
+                              foreign_key: "follower_user_id",
+                              dependent:   :destroy
 
   before_save { |user| user.email = email.downcase }
   before_save :create_remember_token

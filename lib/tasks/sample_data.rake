@@ -3,7 +3,7 @@ namespace :db do
 	task populate: :environment do
 		make_users
 		make_courses
-		make_relationships
+		make_relationships_and_posts
 	end
 end
 
@@ -52,10 +52,28 @@ def make_courses
 	end
 end
 
-def make_relationships
+def make_relationships_and_posts
 	users = User.all
 	courses = Course.all
-	user = users.first
-	followed_courses = courses[2..6]
-	followed_courses.each { |followed_course| user.follow_course!(followed_course) }
+	follower_user = users.first
+	followed_courses = courses[6..10]
+	followed_courses.each { |followed_course| follower_user.follow_course!(followed_course) }
+	followed_courses.each do |followed_course|
+		10.times do
+			content = Faker::Lorem.sentence(5)
+			follower_user.posts.create!(content: content, followed_course_id: followed_course.id)
+		end
+	end
 end
+
+
+
+
+
+
+
+
+
+
+
+

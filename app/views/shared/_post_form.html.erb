@@ -1,0 +1,14 @@
+<% if current_user.following_course?(@course) || current_user?(@course.user) %>
+	<%= form_for(@post) do |f| %>
+	<%-# Trying this out as a fix (moved below) -- this makes it *work* but could allow -%>
+		<%-# users to randomly associate posts w any id-%>
+		<%-# <%= f.hidden_field :followed_course_id, value: @course.id -%>
+		<%= render 'shared/error_messages', object: f.object %>
+		<div class="field">
+			<%= f.text_field :content, placeholder: "Post..." %>
+			<%-# Try moving this here -%>
+			<%= f.hidden_field :followed_course_id, value: @course.id %>
+		</div>
+		<%= f.submit "Post", class: "btn btn-large btn-primary" %>
+	<% end %>
+<% end %>

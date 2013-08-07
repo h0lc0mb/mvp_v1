@@ -120,6 +120,21 @@ describe "Authentication" do
 					specify { response.should redirect_to(signin_path) }
 				end
 			end
+
+			describe "in the Posts controller" do
+
+				describe "submitting to the create action" do
+					before { post posts_path }
+					specify { response.should redirect_to(signin_path) }
+				end
+
+				describe "submitting to the destroy action" do
+					let(:follower_user) { FactoryGirl.create(:user) }
+					let(:followed_course) { FactoryGirl.create(:course) }
+					before { delete post_path(FactoryGirl.create(:post, follower_user: follower_user, followed_course: followed_course)) }
+					specify { response.should redirect_to(signin_path) }
+				end
+			end
 		end
 
 		describe "as wrong user" do

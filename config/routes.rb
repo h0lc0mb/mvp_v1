@@ -4,13 +4,16 @@ MvpV1::Application.routes.draw do
       get :following
     end
   end
-  resources :sessions,      only: [:new, :create, :destroy]
+
   resources :courses do
     member do
       get :followers
     end
   end
+
+  resources :sessions,      only: [:new, :create, :destroy]
   resources :relationships, only: [:create, :destroy]
+  resources :posts,         only: [:create, :destroy]
 
   match '/signup',  to: 'users#new'
   match '/signin',  to: 'sessions#new'
