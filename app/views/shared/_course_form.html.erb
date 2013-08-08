@@ -1,6 +1,12 @@
-<% if current_user.role == "teacher" %>
+<%-# For some reason, respecs were failing until I added "current user &&" to this command -%>
+<%-# Motivation: -%>
+	<%-# http://stackoverflow.com/questions/14805354/undefined-method-role-for-nilnilclass -%>
+<% if current_user && current_user.role == "teacher" %>
 	<%= form_for(@course) do |f| %>
+
+	<%-# This is broken -%>
 		<%= render 'shared/error_messages', object: f.object %>
+
 		<div class="field">
 			<%= f.text_field :coursename, placeholder: "Enter new coursename" %>
 		</div>

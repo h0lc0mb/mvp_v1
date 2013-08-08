@@ -1,0 +1,14 @@
+<li id="<%= feed_item.id %>">
+	<span class="course">
+		<b>
+			<font size = 3>
+				<%= link_to feed_item.followed_course.coursename, feed_item.followed_course %>
+			</font>
+		</b>
+	</span>
+	<span class="content"><%= feed_item.content %></span>
+	<span class="launched_info">
+		Posted by <%= link_to feed_item.follower_user.name, feed_item.follower_user %> 
+		<%= time_ago_in_words(feed_item.created_at) %> ago.
+	</span>
+</li>

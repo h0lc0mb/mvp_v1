@@ -21,11 +21,28 @@ describe "StaticPages" do
     		visit root_path
     	end
 
-    	it "should render the user's 'courses launched' list" do
-    		user.courselist.each do |item|
-    			page.should have_selector("li##{item.id}", text: item.coursename)
-    		end
-    	end
+#    	it "should render the user's 'courses launched' list" do
+#    		user.courselist.each do |item|
+#    			page.should have_selector("li##{item.id}", text: item.coursename)
+#    		end
+#    	end
+
+			before do
+				FactoryGirl.create(:post, follower_user: user,
+																	followed_course: FactoryGirl.create(:course),
+																	content: "I love dinosaurs!")
+				FactoryGirl.create(:post, follower_user: user, 
+																	followed_course: FactoryGirl.create(:course),
+																	content: "No, I seriously love them and also dragons!")
+				sign_in user
+				visit root_path
+			end
+
+			it "should render the user's feed" do
+				user.feed.each do |item|
+					page.should have_selector("li##{item.id}", text: item.content)
+				end
+			end
 
     	describe "courses following count" do
     		let(:course_to_follow) { FactoryGirl.create(:course) }

@@ -16,16 +16,20 @@ class CoursesController < ApplicationController
 		@course = current_user.courses.build(params[:course])
 		if @course.save
 			flash[:success] = "Course launched!"
-			redirect_to root_url
+			redirect_to current_user
+			#redirect_to root_url
 		else
 			@courselist_items = []
-			render 'static_pages/home'
+			#render 'users/show'
+			#render 'static_pages/home'
+			# Once again, I cannot figure out how to get the error messages to work in here
+			redirect_to current_user
 		end
 	end
 
 	def destroy
 		@course.destroy
-		redirect_to root_url
+		redirect_to current_user
 	end
 
 	def followers

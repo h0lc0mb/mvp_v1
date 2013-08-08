@@ -47,6 +47,11 @@ class PostsController < ApplicationController
 			flash[:success] = "Content posted!"
 			redirect_to @course
 		else
+			# Not sure if these things are right...
+			# Confusing bc course page lists posts as @posts
+			  # while home page lists posts as @feed_items
+			@feed_items = []
+			@posts = []
 			redirect_to @course
 #			render 'courses/show'
 		end

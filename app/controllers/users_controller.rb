@@ -7,6 +7,7 @@ class UsersController < ApplicationController
 		@user = User.find(params[:id])
 		@courses_launched = @user.courses.paginate(page: params[:page])
 		@courses_joined = @user.followed_courses.paginate(page: params[:page])
+		@course = current_user.courses.build if signed_in?
 	end
 
 	def new

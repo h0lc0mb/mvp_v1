@@ -30,6 +30,11 @@ class User < ActiveRecord::Base
     Course.where("user_id = ?", id)
   end
 
+  def feed
+    # Not sure if doing through courses will work, but let's see
+    Post.from_courses_followed_by(self)
+  end
+
   def following_course?(course_to_follow)
     relationships.find_by_followed_course_id(course_to_follow.id)
   end

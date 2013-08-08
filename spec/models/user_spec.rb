@@ -1,14 +1,3 @@
-# == Schema Information
-#
-# Table name: users
-#
-#  id         :integer          not null, primary key
-#  name       :string(255)
-#  email      :string(255)
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#
-
 require 'spec_helper'
 
 describe User do
@@ -38,6 +27,7 @@ describe User do
 	it { should respond_to(:follow_course!) }
 	it { should respond_to(:unfollow_course!) }
 	it { should respond_to(:posts) }
+	it { should respond_to(:feed) }
 
 	it { should be_valid }
 	it { should_not be_admin }
@@ -211,29 +201,56 @@ describe User do
 	end
 
 	describe "post associations" do
-
-		let(:follower_user) { FactoryGirl.create(:user) }
+	#	let(:follower_user) { FactoryGirl.create(:user) }
 		let(:followed_course) { FactoryGirl.create(:course) }
-		before { follower_user.follow_course!(followed_course) }
+		before { @user.save }
+		before { followed_course.save }
+		before { @user.follow_course!(followed_course) }
 
 		let!(:older_post) do
-			FactoryGirl.create(:post, follower_user: follower_user, followed_course: followed_course, created_at: 1.day.ago)
+			FactoryGirl.create(:post, follower_user: @user, 
+												 followed_course: followed_course, 
+												 created_at: 1.day.ago)
 		end
 		let!(:newer_post) do
-			FactoryGirl.create(:post, follower_user: follower_user, followed_course: followed_course, created_at: 1.hour.ago)
+			FactoryGirl.create(:post, follower_user: @user, 
+												 followed_course: followed_course, 
+												 created_at: 1.hour.ago)
 		end
 
-#		it "should have the posts in the right order" do
-#			@user.posts.should == [newer_post, older_post]
-#		end
+		it "should have the posts in the right order" do
+			@user.posts.should == [newer_post, older_post]
+		end
 
 		it "should destroy associated posts" do
-			posts = follower_user.posts.dup
-			follower_user.destroy
+			posts = @user.posts.dup
+			@user.destroy
 			posts.should_not be_empty
 			posts.each do |post|
 				Post.find_by_id(post.id).should be_nil
 			end
+		end
+
+		describe "status" do
+			let(:unfollowed_post) do
+				FactoryGirl.create(:post, follower_user: FactoryGirl.create(:user),
+													 followed_course: FactoryGirl.create(:course))
+			end
+			let(:another_course) { FactoryGirl.create(:course) }
+
+			before do
+				@user.follow_course!(another_course)
+				3.times { another_course.posts.create(content: "I have a question...") }
+			end
+
+			its(:feed) { should include(newer_post) }
+			its(:feed) { should include(older_post) }
+			its(:feed) { should_not include(unfollowed_post) }
+		#	its(:feed) do
+		#		another_course.posts.each do |post|
+		#			should include(post)
+		#		end
+		#	end
 		end
 	end
 end

@@ -7,13 +7,14 @@
 			<section>
 				<%= render 'shared/stats' %>
 			</section>
-			<section>
-				<%= render 'shared/course_form' %>
-			</section>
+			<%-# I broke this :( But I don't want it on the home page anyway!-%>
+			<%-#<section>-%>
+				<%-#<%= render 'shared/course_form' -%>
+			<%-#</section>-%>
 		</aside>
 		<div class="span8">
-			<h3>Course List - This is a placeholder</h3>
-			<%= render 'shared/courselist' %>
+			<h3>Recent posts from your courses</h3>
+			<%= render 'shared/feed' %>
 		</div>
 	</div>
 <% else %>
