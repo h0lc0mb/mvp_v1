@@ -1,5 +1,9 @@
 <li>
-	<span class="content"><%= post.content %></span>
+	<% if post.follower_user == @course.user %>
+		<span class="launcher_content"><%= post.content %></span>
+	<% else %>
+		<span class="content"><%= post.content %></span>
+	<% end %>
 	<span class="timestamp">
 		Posted by
 		<%= link_to post.follower_user.name, post.follower_user %>

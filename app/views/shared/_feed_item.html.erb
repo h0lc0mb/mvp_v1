@@ -6,7 +6,11 @@
 			</font>
 		</b>
 	</span>
-	<span class="content"><%= feed_item.content %></span>
+	<% if feed_item.follower_user == feed_item.followed_course.user %>
+		<span class="launcher_content"><%= feed_item.content %></span>
+	<% else %>
+		<span class="content"><%= feed_item.content %></span>
+	<% end %>
 	<span class="launched_info">
 		Posted by <%= link_to feed_item.follower_user.name, feed_item.follower_user %> 
 		<%= time_ago_in_words(feed_item.created_at) %> ago.
