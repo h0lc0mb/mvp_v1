@@ -4,6 +4,34 @@ describe "Course pages" do
 
 	subject { page }
 
+	
+	describe "index" do
+    let(:user) { FactoryGirl.create(:user) }
+
+    before do
+      sign_in user
+      visit courses_path
+    end
+
+    it { should have_selector('title', text: 'Browse courses') }
+    it { should have_selector('h1',    text: 'Browse courses') }
+
+    describe "pagination" do
+
+      before(:all) { 31.times { FactoryGirl.create(:course) } }
+      after(:all)  { Course.delete_all }
+
+      it { should have_selector('div.pagination') }
+
+      it "should list each course" do
+        Course.paginate(page: 1).each do|course|
+          page.should have_selector('li', text: course.coursename)
+        end
+      end
+    end
+  end
+
+
 	let(:user) { FactoryGirl.create(:user) }
 	before { sign_in user }
 

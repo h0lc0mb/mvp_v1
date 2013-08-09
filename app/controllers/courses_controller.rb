@@ -1,5 +1,5 @@
 class CoursesController < ApplicationController
-	before_filter :signed_in_user, only: [:create, :destroy, :followers]
+	before_filter :signed_in_user, only: [:create, :destroy, :followers, :index]
 	before_filter :teacher_user,   only: [:create, :destroy]
 	before_filter :correct_user,   only: :destroy
 
@@ -37,6 +37,10 @@ class CoursesController < ApplicationController
 		@course = Course.find(params[:id])
 		@users = @course.follower_users.paginate(page: params[:page])
 		render 'show_followers'
+	end
+
+	def index
+		@courses = Course.paginate(page: params[:page])
 	end
 
 	private
