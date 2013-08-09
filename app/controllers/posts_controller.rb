@@ -1,5 +1,6 @@
  class PostsController < ApplicationController
-	before_filter :signed_in_user
+	before_filter :signed_in_user, only: [:create, :destroy]
+	before_filter :correct_user,   only: :destroy
 
 	def create
 		# Figure out the relevant course
@@ -31,5 +32,14 @@
 	end
 
 	def destroy
+		@post.destroy
+		redirect_to root_url
 	end
+
+	private
+
+		def correct_user
+			@post = current_user.posts.find_by_id(params[:id])
+			redirect_to root_url if @post.nil?
+		end
 end

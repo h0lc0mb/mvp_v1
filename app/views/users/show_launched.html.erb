@@ -11,7 +11,7 @@
 		</section>
 	</aside>
 	<div class="span8">
-		<h3><%= @title %> (<%= @user.relationships.count%>)</h3>
+		<h3><%= @title %> (<%= @user.courses.count%>)</h3>
 		<% if @courses.any? %>
 			<ol class="courses">
 				<%= render @courses %>

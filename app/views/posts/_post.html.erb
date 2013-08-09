@@ -10,4 +10,9 @@
 		<%= time_ago_in_words(post.created_at) %> 
 		ago.
 	</span>
+	<% if current_user?(post.follower_user) %>
+		<%= link_to "delete", post, method: :delete,
+																data: { confirm: "You sure?" },
+																title: post.content %>
+	<% end %>
 </li>

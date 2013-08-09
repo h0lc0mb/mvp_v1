@@ -214,11 +214,27 @@ describe "User pages" do
 
     before do
       sign_in user
-      visit following_user_path(user)
+      visit following_user_path(user) # why is this not following_course_path(user) ?
+                                      # because "following" lives in the "users" resource
+                                        # in config/routes
     end
 
-    it { should have_selector('title', text: full_title('Courses')) }
-    it { should have_selector('h3', text: 'Courses') }
+    it { should have_selector('title', text: full_title('Courses Joined')) }
+    it { should have_selector('h3', text: 'Courses Joined') }
+    it { should have_link(course.coursename, href: course_path(course)) }
+  end
+
+  describe "courses launched" do
+    let(:user) { FactoryGirl.create(:user) }
+    let!(:course) { FactoryGirl.create(:course, user: user) }
+
+    before do
+      sign_in user
+      visit launched_user_path(user)
+    end
+
+    it { should have_selector('title', text: full_title('Courses Launched')) }
+    it { should have_selector('h3', text: 'Courses Launched') }
     it { should have_link(course.coursename, href: course_path(course)) }
   end
 end

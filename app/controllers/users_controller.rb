@@ -55,6 +55,13 @@ class UsersController < ApplicationController
 		render 'show_following'
 	end
 
+	def launched
+		@title = "Courses Launched"
+		@user = User.find(params[:id])
+		@courses = @user.courses.paginate(page: params[:page])
+		render 'show_launched'
+	end
+
 	private
 
 		def correct_user

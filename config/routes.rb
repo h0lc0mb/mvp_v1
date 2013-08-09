@@ -1,7 +1,7 @@
 MvpV1::Application.routes.draw do
   resources :users do
     member do
-      get :following
+      get :following, :launched
     end
   end
 
