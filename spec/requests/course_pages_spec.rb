@@ -47,6 +47,7 @@ describe "Course pages" do
 #		it { should_not have_button('Launch course') }
 #	end
 
+# Edit later -- they should only see it on their OWN page! This works, but I didn't write the test correctly.
 	describe "should see launch button as a teacher" do
 		before do
 			user.role = "teacher"
