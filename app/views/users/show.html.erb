@@ -12,7 +12,9 @@
 			<%= render 'shared/stats' %>
 		</section>
 		<section>
-			<%= render 'shared/course_form' %>
+			<% if @user == current_user %>
+				<%= render 'shared/course_form' %>
+			<% end %>
 		</section>
 	</aside>
 	<div class="span8">
